@@ -22,6 +22,16 @@ interface CourseSubcategory {
   courses: string[];
 }
 
+// Adicionando a interface Product
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  popular?: boolean;
+}
+
 const App: React.FC = () => {
   // Estado para controlar a página ativa
   const [activePage, setActivePage] = useState('inicio');
@@ -29,6 +39,8 @@ const App: React.FC = () => {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   // Estado para controlar a visibilidade do dropdown de cursos
   const [showCoursesDropdown, setShowCoursesDropdown] = useState(false);
+  // Adicionando estado para produto selecionado
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   
   // Dados de navegação
   const menuItems: MenuItem[] = [
@@ -102,6 +114,54 @@ const App: React.FC = () => {
     }
   ];
 
+  // Adicionando dados de produtos
+  const productsData: Product[] = [
+    {
+      id: 'react-course',
+      name: 'Curso Completo de React',
+      price: 297.90,
+      image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+      category: 'programacao',
+      popular: true
+    },
+    {
+      id: 'node-course',
+      name: 'Node.js do Zero ao Avançado',
+      price: 347.50,
+      image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+      category: 'programacao',
+      popular: true
+    },
+    {
+      id: 'python-django',
+      name: 'Python + Django Fullstack',
+      price: 397.00,
+      image: 'https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/310430079/original/dc2eaa1c0b0a60e4940e5d14bcb7b97128d9a340/develop-django-python-and-react-js-full-stack-websites.png',
+      category: 'programacao'
+    },
+    {
+      id: 'ux-course',
+      name: 'UX Design & Prototipagem',
+      price: 247.90,
+      image: 'https://images.unsplash.com/photo-1545235617-9465d2a55698?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+      category: 'design'
+    },
+    {
+      id: 'unity-course',
+      name: 'Desenvolver Jogos Unity / Unreal',
+      price: 427.80,
+      image: 'https://miro.medium.com/v2/resize:fit:2800/0*S3yGkhH4XGvv5kgo.png',
+      category: 'jogos'
+    },
+    {
+      id: 'mysql-course',
+      name: 'MySQL para Desenvolvedores',
+      price: 197.50,
+      image: 'https://scriptdev.com.br/wp-content/uploads/2023/05/como-instalar-mysql-workbench.png',
+      category: 'banco-dados'
+    }
+  ];
+
   // Função para toggle do dropdown de cursos
   const toggleCoursesDropdown = () => {
     setShowCoursesDropdown(!showCoursesDropdown);
@@ -139,6 +199,15 @@ const App: React.FC = () => {
     setShowCoursesDropdown(false);
   };
 
+  // Adicionando função para manipular clique no produto
+  const handleProductClick = (productId: string) => {
+    setSelectedProduct(productId);
+    // Simular um feedback visual (poderia abrir um modal, etc.)
+    setTimeout(() => {
+      setSelectedProduct(null);
+    }, 300);
+  };
+
   // Renderizar conteúdo com base na página ativa
   const renderContent = () => {
     switch (activePage) {
@@ -147,12 +216,31 @@ const App: React.FC = () => {
           <div className="content">
             <h1>Bem-vindo à TechLearn</h1>
             <p>Escolha entre diversos cursos de tecnologia e avance na sua carreira.</p>
+            
             <div className="featured-courses">
               <h2>Cursos em Destaque</h2>
-              <div className="course-cards">
-                <div className="course-card">React</div>
-                <div className="course-card">Node.js</div>
-                <div className="course-card">UX Design</div>
+              <div className="products-grid">
+                {productsData.map(product => (
+                  <div 
+                    key={product.id} 
+                    className={`product-card ${selectedProduct === product.id ? 'clicked' : ''} ${product.popular ? 'popular' : ''}`}
+                    onClick={() => handleProductClick(product.id)}
+                  >
+                    {product.popular && <div className="popular-badge">Popular</div>}
+                    <div className="product-image">
+                      <img src={product.image} alt={product.name} />
+                    </div>
+                    <div className="product-info">
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-price">
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
+                      </p>
+                      <button className="product-button">
+                        Ver Detalhes
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
